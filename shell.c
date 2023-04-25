@@ -71,6 +71,7 @@ int main(int argc, char **argv, char **envp)
 			continue;
 		}
 	}
+	free(args);
 	return (0);
 }
 
