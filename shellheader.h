@@ -12,6 +12,7 @@
 
 char *read_line();
 char **parse_commands(char *line);
+char *trim(char *str);
 char *get_command_path(char *command);
 int execute(char *command_path, char **args, char **envp);
 
