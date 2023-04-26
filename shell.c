@@ -58,7 +58,7 @@ int main(int argc, char **argv, char **envp)
 			if (command_path == NULL)
 			{
 				printf("%s: No such file or directory\n", commands[i]);
-				free (line);
+				free(line);
 				if (!interactive)
 				{
 					break;
@@ -75,6 +75,7 @@ int main(int argc, char **argv, char **envp)
 		}
 		if (exit_flag)
 		{
+			free(commands);
 			free(line);
 			break;
 		}
@@ -128,7 +129,7 @@ char *read_line()
 /**
 * get_command_path - Function to get command path
 * @command: Command to look for
-* Return: Command path if found, NULL if not 
+* Return: Command path if found, NULL if not
 *
 */
 char *get_command_path(char *command)
@@ -144,6 +145,7 @@ char *get_command_path(char *command)
 		else
 		{
 			char bin_path[] = "/bin/";
+
 			command_path = malloc(strlen(bin_path) + strlen(command) + 1);
 			strcpy(command_path, bin_path);
 			strcat(command_path, command);
@@ -152,7 +154,6 @@ char *get_command_path(char *command)
 				free(command_path);
 				command_path = NULL;
 			}
-			
 		}
 	}
 	return (command_path);
@@ -160,7 +161,7 @@ char *get_command_path(char *command)
 
 /**
 * execute - Function thar execute a command
-* @command_path: Path to the command to execute 
+* @command_path: Path to the command to execute
 * @args: Arguments for the command
 * @envp: Array of env variables
 * Return: Return 1 on successful execution
@@ -168,7 +169,7 @@ char *get_command_path(char *command)
 int execute(char *command_path, char **args, char **envp)
 {
 	pid_t pid;
-	
+
 	pid = fork();
 	if (pid == 0)
 	{
