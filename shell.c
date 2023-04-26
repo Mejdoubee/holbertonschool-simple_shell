@@ -1,5 +1,6 @@
 #include "shellheader.h"
 
+char **parse_commands(char *line);
 /**
 * main - Main function for the simple shell
 * @argc: Argument count
@@ -13,6 +14,9 @@ int main(int argc, char **argv, char **envp)
 	char *command_path;
 	char **args;
 	int interactive = 1;
+	char **commands;
+	int i;
+	int exit_flag = 0;
 
 	(void)argc;
 	(void)argv;
@@ -41,31 +45,42 @@ int main(int argc, char **argv, char **envp)
 			continue;
 		}
 
-		if (strcmp(line, "exit") == 0)
+		commands = parse_commands(line);
+		for (i = 0; commands[i]; i++)
+		{
+			if (strcmp(commands[i], "exit") == 0)
+			{
+				exit_flag = 1;
+				break;
+			}
+
+			command_path = get_command_path(commands[i]);
+			if (command_path == NULL)
+			{
+				printf("%s: No such file or directory\n", commands[i]);
+				free (line);
+				if (!interactive)
+				{
+					break;
+				}
+				continue;
+			}
+
+			args[0] = command_path;
+			execute(command_path, args, envp);
+			if (command_path != commands[i])
+			{
+				free(command_path);
+			}
+		}
+		if (exit_flag)
 		{
 			free(line);
 			break;
 		}
-
-		command_path = get_command_path(line);
-		if (command_path == NULL)
-		{
-			printf("%s: No such file or directory\n", line);
-			free (line);
-			if (!interactive)
-			{
-				break;
-			}
-			continue;
-		}
-
-		args[0] = command_path;
-		execute(command_path, args, envp);
+		free(commands);
 		free(line);
-		if (command_path != line)
-		{
-			free(command_path);
-		}
+
 		if (!interactive)
 		{
 			continue;
@@ -171,4 +186,34 @@ int execute(char *command_path, char **args, char **envp)
 		exit(1);
 	}
 	return (1);
+}
+
+/**
+* parse_commands - Parses a line into an array of commands
+* @line: The input line to parse
+* Return: A pointer to an array of commands
+*
+*/
+char **parse_commands(char *line)
+{
+	char **commands;
+	char *command;
+	int count = 0;
+
+	commands = malloc(sizeof(char *) * (strlen(line) + 1));
+	if (!commands)
+	{
+		perror("malloc");
+		exit(1);
+	}
+
+	command = strtok(line, " \n\t");
+	while (command)
+	{
+		commands[count++] = command;
+		command = strtok(NULL, "\n\t");
+	}
+	commands[count] = NULL;
+
+	return (commands);
 }
