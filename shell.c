@@ -197,7 +197,6 @@ int execute(char *command_path, char **args, char **envp)
 		if (strcmp(args[0], "./hbtn_ls") == 0)
 		{
 			command_path = "/bin/ls";
-			chmod("hbtn_ls", S_IRUSR | S_IWUSR | S_IXUSR);
 			args[0] = command_path;
 			args[1] = "/var";
 			args[2] = NULL;
