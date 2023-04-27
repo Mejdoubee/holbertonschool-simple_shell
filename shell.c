@@ -72,6 +72,7 @@ int main(int argc, char **argv, char **envp)
 				free(command_path);
 			}
 		}
+		free(line);
 		if (exit_flag)
 		{
 			free(commands);
