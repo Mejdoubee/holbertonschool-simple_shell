@@ -12,7 +12,6 @@ int main(int argc, char **argv, char **envp)
 {
 	char *line;
 	char *command_path;
-	char **args;
 	int interactive = 1;
 	char **commands;
 	int i = 0;
@@ -21,8 +20,6 @@ int main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 
-	args = malloc(sizeof(char *) * 2);
-	args[1] = NULL;
 	if (isatty(STDIN_FILENO) == 0)
 	{
 		interactive = 0;
@@ -50,24 +47,25 @@ int main(int argc, char **argv, char **envp)
 			if (strcmp(commands[i], "exit") == 0)
 			{
 				exit_flag = 1;
-				break;
 			}
-
-			command_path = get_command_path(commands[i]);
-			if (command_path == NULL)
+			else 
 			{
-				printf("%s: No such file or directory\n", commands[i]);
-				if (!interactive)
+				command_path = get_command_path(commands[i]);
+				if (command_path == NULL)
 				{
-					break;
+					printf("%s: No such file or directory\n", commands[i]);
+					if (!interactive)
+					{
+						break;
+					}
+					continue;
 				}
-				continue;
-			}
 
-			execute(command_path, commands, envp);
-			if (command_path != commands[i])
-			{
-				free(command_path);
+				execute(command_path, commands, envp);
+				if (command_path != commands[i])
+				{
+					free(command_path);
+				}
 			}
 		}
 		free(line);
@@ -77,13 +75,11 @@ int main(int argc, char **argv, char **envp)
 			break;
 		}
 		free(commands);
-
 		if (!interactive)
 		{
 			continue;
 		}
 	}
-	free(args);
 	return (0);
 }
 
