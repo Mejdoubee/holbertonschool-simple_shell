@@ -46,7 +46,7 @@ int main(int argc, char **argv, char **envp)
 		{
 			if (strcmp(commands[i], "exit") == 0)
 			{
-				exit_flag = 1;
+				exit_flag = 2;
 			}
 			else 
 			{
@@ -80,7 +80,7 @@ int main(int argc, char **argv, char **envp)
 			continue;
 		}
 	}
-	return (0);
+	return (exit_flag);
 }
 
 /**
