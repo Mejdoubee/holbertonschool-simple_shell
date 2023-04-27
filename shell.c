@@ -15,7 +15,7 @@ int main(int argc, char **argv, char **envp)
 	char **args;
 	int interactive = 1;
 	char **commands;
-	int i;
+	int i = 0;
 	int exit_flag = 0;
 
 	(void)argc;
@@ -45,7 +45,7 @@ int main(int argc, char **argv, char **envp)
 		}
 
 		commands = parse_commands(line);
-		for (i = 0; commands[i] && i < 1; i++)
+		if (commands[i])
 		{
 			if (strcmp(commands[i], "exit") == 0)
 			{
@@ -64,12 +64,7 @@ int main(int argc, char **argv, char **envp)
 				continue;
 			}
 
-			args[0] = commands[i];
-			if (strcmp(args[0], "hbtn_ls") == 0)
-			{
-				args[0] = "/bin/ls";
-			}
-			execute(command_path, args, envp);
+			execute(command_path, commands, envp);
 			if (command_path != commands[i])
 			{
 				free(command_path);
@@ -246,4 +241,3 @@ char **parse_commands(char *line)
 
 	return (commands);
 }
-
