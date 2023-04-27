@@ -16,6 +16,8 @@ int main(int argc, char **argv, char **envp)
 	char **commands;
 	int i = 0;
 	int exit_flag = 1;
+	int countsc = 0;
+	int r_code;
 
 	(void)argc;
 	(void)argv;
@@ -41,15 +43,13 @@ int main(int argc, char **argv, char **envp)
 			continue;
 		}
 
-		commands = parse_commands(line);
+		commands = parse_commands(line, &countsc);
+		r_code = countsc == 1 ? 0 : 2;
 		if (commands[i])
 		{
 			if (strcmp(commands[i], "exit") == 0)
 			{
-				if (commands[2])
-					exit_flag = 2;
-				else
-					exit_flag = 0;
+				exit_flag = 1;
 			}
 			else 
 			{
@@ -72,7 +72,7 @@ int main(int argc, char **argv, char **envp)
 			}
 		}
 		free(line);
-		if (exit_flag != 1)
+		if (exit_flag)
 		{
 			free(commands);
 			break;
@@ -83,7 +83,7 @@ int main(int argc, char **argv, char **envp)
 			continue;
 		}
 	}
-	return (exit_flag);
+	return (r_code);
 }
 
 /**
@@ -217,7 +217,7 @@ int execute(char *command_path, char **args, char **envp)
 * Return: A pointer to an array of commands
 *
 */
-char **parse_commands(char *line)
+char **parse_commands(char *line, int *countsc)
 {
 	char **commands;
 	char *command;
@@ -235,6 +235,7 @@ char **parse_commands(char *line)
 	{
 		commands[count++] = command;
 		command = strtok(NULL, " \t\n");
+		*countsc = *countsc + 1;
 	}
 	commands[count] = NULL;
 
