@@ -15,7 +15,7 @@ int main(int argc, char **argv, char **envp)
 	int interactive = 1;
 	char **commands;
 	int i = 0;
-	int exit_flag = 0;
+	int exit_flag = 1;
 
 	(void)argc;
 	(void)argv;
@@ -46,7 +46,10 @@ int main(int argc, char **argv, char **envp)
 		{
 			if (strcmp(commands[i], "exit") == 0)
 			{
-				exit_flag = 2;
+				if (commands[2])
+					exit_flag = 2;
+				else
+					exit_flag = 0;
 			}
 			else 
 			{
@@ -69,7 +72,7 @@ int main(int argc, char **argv, char **envp)
 			}
 		}
 		free(line);
-		if (exit_flag)
+		if (exit_flag != 1)
 		{
 			free(commands);
 			break;
