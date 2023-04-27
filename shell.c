@@ -58,7 +58,6 @@ int main(int argc, char **argv, char **envp)
 			if (command_path == NULL)
 			{
 				printf("%s: No such file or directory\n", commands[i]);
-				free(line);
 				if (!interactive)
 				{
 					break;
@@ -76,11 +75,9 @@ int main(int argc, char **argv, char **envp)
 		if (exit_flag)
 		{
 			free(commands);
-			free(line);
 			break;
 		}
 		free(commands);
-		free(line);
 
 		if (!interactive)
 		{
@@ -208,11 +205,11 @@ char **parse_commands(char *line)
 		exit(1);
 	}
 
-	command = strtok(line, " \n\t");
+	command = strtok(line, " \t");
 	while (command)
 	{
 		commands[count++] = command;
-		command = strtok(NULL, "\n\t");
+		command = strtok(NULL, " \t");
 	}
 	commands[count] = NULL;
 
