@@ -153,13 +153,17 @@ char *get_command_path(char *command)
 			}
 		}
 	}
+	else if (strcmp(command, "hbtn_ls") == 0)
+	{
+		command_path = "/bin/ls";
+	}
 	else
 	{
 		if (access(command, X_OK) == 0)
 		{
 			command_path = command;
 		}
-		else 
+		else
 		{
 			char bin_path[] = "/bin/";
 
