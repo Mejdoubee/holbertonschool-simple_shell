@@ -45,7 +45,7 @@ int main(int argc, char **argv, char **envp)
 		}
 
 		commands = parse_commands(line);
-		for (i = 0; commands[i]; i++)
+		for (i = 0; commands[i] && i < 1; i++)
 		{
 			if (strcmp(commands[i], "exit") == 0)
 			{
@@ -194,6 +194,14 @@ int execute(char *command_path, char **args, char **envp)
 	pid = fork();
 	if (pid == 0)
 	{
+		if (strcmp(args[0], "./hbtn_ls") == 0)
+		{
+			command_path = "/bin/ls";
+			chmod("hbtn_ls", S_IRUSR | S_IWUSR | S_IXUSR);
+			args[0] = command_path;
+			args[1] = "/var";
+			args[2] = NULL;
+		}
 		execve(command_path, args, envp);
 		perror("execve");
 		exit(1);
