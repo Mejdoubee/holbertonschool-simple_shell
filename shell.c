@@ -153,6 +153,26 @@ char *get_command_path(char *command)
 			}
 		}
 	}
+	else
+	{
+		if (access(command, X_OK) == 0)
+		{
+			command_path = command;
+		}
+		else 
+		{
+			char bin_path[] = "/bin/";
+
+			command_path = malloc(strlen(bin_path) + strlen(command) + 1);
+			strcpy(command_path, bin_path);
+			strcat(command_path, command);
+			if (access(command_path, X_OK) != 0)
+			{
+				free(command_path);
+				command_path = NULL;
+			}
+		}
+	}
 	return (command_path);
 }
 
