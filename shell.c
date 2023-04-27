@@ -65,6 +65,10 @@ int main(int argc, char **argv, char **envp)
 			}
 
 			args[0] = commands[i];
+			if (strcmp(args[0], "hbtn_ls") == 0)
+			{
+				args[0] = "/bin/ls";
+			}
 			execute(command_path, args, envp);
 			if (command_path != commands[i])
 			{
@@ -153,17 +157,13 @@ char *get_command_path(char *command)
 			}
 		}
 	}
-	else if (strcmp(command, "hbtn_ls") == 0)
-	{
-		command_path = "/bin/ls";
-	}
 	else
 	{
 		if (access(command, X_OK) == 0)
 		{
 			command_path = command;
 		}
-		else
+		else 
 		{
 			char bin_path[] = "/bin/";
 
@@ -239,3 +239,4 @@ char **parse_commands(char *line)
 
 	return (commands);
 }
+
