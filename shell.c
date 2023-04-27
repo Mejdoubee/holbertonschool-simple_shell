@@ -1,6 +1,6 @@
 #include "shellheader.h"
 
-char **parse_commands(char *line);
+
 /**
 * main - Main function for the simple shell
 * @argc: Argument count
@@ -23,7 +23,6 @@ int main(int argc, char **argv, char **envp)
 
 	args = malloc(sizeof(char *) * 2);
 	args[1] = NULL;
-
 	if (isatty(STDIN_FILENO) == 0)
 	{
 		interactive = 0;
@@ -65,7 +64,7 @@ int main(int argc, char **argv, char **envp)
 				continue;
 			}
 
-			args[0] = command_path;
+			args[0] = commands[i];
 			execute(command_path, args, envp);
 			if (command_path != commands[i])
 			{
@@ -206,11 +205,11 @@ char **parse_commands(char *line)
 		exit(1);
 	}
 
-	command = strtok(line, " \t");
+	command = strtok(line, " \t\n");
 	while (command)
 	{
 		commands[count++] = command;
-		command = strtok(NULL, " \t");
+		command = strtok(NULL, " \t\n");
 	}
 	commands[count] = NULL;
 
