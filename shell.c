@@ -14,7 +14,7 @@ int main(int argc, char **argv, char **envp)
 	char *command_path;
 	int interactive = 1;
 	char **commands;
-	int exit_flag = 1;
+	int exit_flag = 0;
 	int r_code = 0;
 
 	(void)argc;
@@ -25,7 +25,7 @@ int main(int argc, char **argv, char **envp)
 		interactive = 0;
 	}
 
-	while (1)
+	while (!exit_flag)
 	{
 		if (interactive)
 		{
@@ -33,35 +33,34 @@ int main(int argc, char **argv, char **envp)
 		}
 
 		line = read_line();
-		while (line)
+		if (line == NULL)
 		{
-			if (interactive)
+			if (!interactive)
 			{
-				printf("#cisfun$ ");
+				break;
 			}
-			commands = parse_commands(line);
-
-			if (commands[0])
+			else
 			{
+				continue;
+			}
+		}
+		commands = parse_commands(line);
 
-				if (strcmp(commands[0], "exit") == 0)
+		if (commands[0])
+		{
+			if (strcmp(commands[0], "exit") == 0)
+			{
+				exit_flag = 1;
+			}
+			else
+			{
+				command_path = get_command_path(commands[0]);
+				if (command_path == NULL)
 				{
-					exit_flag = 1;
-					break;
+					printf("%s: No such file or directory\n", commands[0]);
 				}
 				else
 				{
-					command_path = get_command_path(commands[0]);
-					if (command_path == NULL)
-					{
-					printf("%s: No such file or directory\n", commands[0]);
-					if (!interactive)
-					{
-						break;
-					}
-					continue;
-					}
-
 					execute(command_path, commands, envp);
 					if (command_path != commands[0])
 					{
@@ -69,20 +68,12 @@ int main(int argc, char **argv, char **envp)
 					}
 				}
 			}
-			line = read_line();
 		}
-			free(line);
-			if (exit_flag)
-			{
-				free(commands);
-				break;
-		}
-			free(commands);
-			if (!interactive)
-			{
-				continue;
-			}
+		free(commands);
+		free(line);
+		line = NULL;
 	}
+
 	return (r_code);
 }
 
