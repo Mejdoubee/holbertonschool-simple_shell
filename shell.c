@@ -14,10 +14,8 @@ int main(int argc, char **argv, char **envp)
 	char *command_path;
 	int interactive = 1;
 	char **commands;
-	int i = 0;
 	int exit_flag = 1;
-	int countsc = 0;
-	int r_code;
+	int r_code = 0;
 
 	(void)argc;
 	(void)argv;
@@ -33,55 +31,57 @@ int main(int argc, char **argv, char **envp)
 		{
 			printf("#cisfun$ ");
 		}
-		line = read_line();
-		if (line == NULL)
-		{
-			if (feof(stdin))
-			{
-				break;
-			}
-			continue;
-		}
 
-		commands = parse_commands(line, &countsc);
-		r_code = countsc == 1 ? 0 : 2;
-		if (commands[i])
+		line = read_line();
+		while (line)
 		{
-			if (strcmp(commands[i], "exit") == 0)
+			if (interactive)
 			{
-				exit_flag = 1;
+				printf("#cisfun$ ");
 			}
-			else 
+			commands = parse_commands(line);
+
+			if (commands[0])
 			{
-				command_path = get_command_path(commands[i]);
-				if (command_path == NULL)
+
+				if (strcmp(commands[0], "exit") == 0)
 				{
-					printf("%s: No such file or directory\n", commands[i]);
+					exit_flag = 1;
+					break;
+				}
+				else
+				{
+					command_path = get_command_path(commands[0]);
+					if (command_path == NULL)
+					{
+					printf("%s: No such file or directory\n", commands[0]);
 					if (!interactive)
 					{
 						break;
 					}
 					continue;
-				}
+					}
 
-				execute(command_path, commands, envp);
-				if (command_path != commands[i])
-				{
-					free(command_path);
+					execute(command_path, commands, envp);
+					if (command_path != commands[0])
+					{
+						free(command_path);
+					}
 				}
 			}
+			line = read_line();
 		}
-		free(line);
-		if (exit_flag)
-		{
+			free(line);
+			if (exit_flag)
+			{
+				free(commands);
+				break;
+		}
 			free(commands);
-			break;
-		}
-		free(commands);
-		if (!interactive)
-		{
-			continue;
-		}
+			if (!interactive)
+			{
+				continue;
+			}
 	}
 	return (r_code);
 }
@@ -157,7 +157,7 @@ char *get_command_path(char *command)
 		{
 			command_path = command;
 		}
-		else 
+		else
 		{
 			char bin_path[] = "/bin/";
 
@@ -188,13 +188,6 @@ int execute(char *command_path, char **args, char **envp)
 	pid = fork();
 	if (pid == 0)
 	{
-		if (strcmp(args[0], "./hbtn_ls") == 0)
-		{
-			command_path = "/bin/ls";
-			args[0] = command_path;
-			args[1] = "/var";
-			args[2] = NULL;
-		}
 		execve(command_path, args, envp);
 		perror("execve");
 		exit(1);
@@ -217,7 +210,7 @@ int execute(char *command_path, char **args, char **envp)
 * Return: A pointer to an array of commands
 *
 */
-char **parse_commands(char *line, int *countsc)
+char **parse_commands(char *line)
 {
 	char **commands;
 	char *command;
@@ -230,12 +223,11 @@ char **parse_commands(char *line, int *countsc)
 		exit(1);
 	}
 
-	command = strtok(line, " \t\n");
+	command = strtok(line, " \t");
 	while (command)
 	{
 		commands[count++] = command;
-		command = strtok(NULL, " \t\n");
-		*countsc = *countsc + 1;
+		command = strtok(NULL, " \t");
 	}
 	commands[count] = NULL;
 

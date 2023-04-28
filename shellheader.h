@@ -15,11 +15,8 @@
 
 
 char *read_line();
-char **parse_commands(char *line, int *countsc);
-char *trim(char *str);
+char **parse_commands(char *line);
 char *get_command_path(char *command);
-void hbtn_ls_wrapper(char *command_path, char **args, char **envp);
 int execute(char *command_path, char **args, char **envp);
-void copy_ls_to_hbtn_ls();
 
 #endif
