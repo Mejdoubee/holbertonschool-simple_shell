@@ -57,7 +57,7 @@ int main(int argc, char **argv, char **envp)
 				command_path = get_command_path(commands[0]);
 				if (command_path == NULL)
 				{
-					printf("%s: No such file or directory\n", commands[0]);
+					printf("%s: 1: %s: not found\n", argv[0], commands[0]);
 				}
 				else
 				{
