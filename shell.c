@@ -121,6 +121,10 @@ char *read_line()
 char *get_command_path(char *command)
 {
 	char *command_path = NULL;
+	char *bin_path = getenv("PATH");
+	char *copy_path = NULL;
+	char *token = NULL;
+	char *ptr = NULL;
 
 	if (command[0] == '/')
 	{
@@ -130,16 +134,8 @@ char *get_command_path(char *command)
 		}
 		else
 		{
-			char bin_path[] = "/bin/";
-
-			command_path = malloc(strlen(bin_path) + strlen(command) + 1);
-			strcpy(command_path, bin_path);
-			strcat(command_path, command);
-			if (access(command_path, X_OK) != 0)
-			{
-				free(command_path);
-				command_path = NULL;
-			}
+			perror("access");
+			command_path = NULL;
 		}
 	}
 	else
@@ -150,16 +146,28 @@ char *get_command_path(char *command)
 		}
 		else
 		{
-			char bin_path[] = "/bin/";
-
-			command_path = malloc(strlen(bin_path) + strlen(command) + 1);
-			strcpy(command_path, bin_path);
-			strcat(command_path, command);
-			if (access(command_path, X_OK) != 0)
+			command_path = NULL;
+			copy_path = strdup(bin_path);
+			token = strtok(copy_path, ":");
+			while (token)
 			{
-				free(command_path);
-				command_path = NULL;
+				ptr = malloc(strlen(token) + strlen(command) + 2);
+				strcpy(ptr, token);
+				strcat(ptr, "/");
+				strcat(ptr, command);
+				if (access(ptr, X_OK) == 0)
+				{
+					command_path = ptr;
+					break;
+				}
+				else
+				{
+					free(ptr);
+					command_path = NULL;
+				}
+				token = strtok(NULL, ":");
 			}
+			free(copy_path);
 		}
 	}
 	return (command_path);
