@@ -58,6 +58,7 @@ int main(int argc, char **argv, char **envp)
 				if (command_path == NULL)
 				{
 					printf("%s: 1: %s: not found\n", argv[0], commands[0]);
+					r_code = 127;
 				}
 				else
 				{
