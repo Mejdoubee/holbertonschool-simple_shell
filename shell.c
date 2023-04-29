@@ -147,6 +147,10 @@ char *get_command_path(char *command)
 		else
 		{
 			command_path = NULL;
+			if (bin_path == NULL || strlen(bin_path) == 0)
+			{
+				bin_path = ".";
+			}
 			copy_path = strdup(bin_path);
 			token = strtok(copy_path, ":");
 			while (token)
