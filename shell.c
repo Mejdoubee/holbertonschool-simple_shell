@@ -126,6 +126,13 @@ char *get_command_path(char *command)
 	char *copy_path = NULL;
 	char *token = NULL;
 	char *ptr = NULL;
+	char *paths = ".:/usr/bin";
+
+	if (bin_path == NULL || strlen(bin_path) == 0)
+	{
+		bin_path = paths;
+	}
+
 
 	if (command[0] == '/')
 	{
@@ -148,10 +155,6 @@ char *get_command_path(char *command)
 		else
 		{
 			command_path = NULL;
-			if (bin_path == NULL || strlen(bin_path) == 0)
-			{
-				bin_path = ".";
-			}
 			copy_path = strdup(bin_path);
 			token = strtok(copy_path, ":");
 			while (token)
