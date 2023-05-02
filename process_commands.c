@@ -1,53 +1,63 @@
-#include "shellheader.h"
+	#include "shellheader.h"
 
-/**
-* process_commands - Main loop for processing and executing commands
-* @interactive: Flag indicating if the shell is running in interactive mode
-* @argv: Array of arguments
-* @envp: Array of environment variables
-* Return: Return code of the command execution
-*/
+	/**
+	* process_commands - Main loop for processing and executing commands
+	* @interactive: Flag indicating if the shell is running in interactive mode
+	* @argv: Array of arguments
+	* @envp: Array of environment variables
+	* Return: Return code of the command execution
+	*/
 
-int process_commands(int interactive, char **argv, char **envp)
-{
-	char *line, *command_path;
-	int exit_flag = 0, r_code = 0;
-	char **commands;
-
-	while (!exit_flag)
+	int process_commands(int interactive, char **argv, char **envp)
 	{
-		if (interactive)
+		char *line, *command_path;
+		int exit_flag = 0, r_code = 0, i = 0;
+		char **commands;
+
+		while (!exit_flag)
 		{
-			printf("#cisfun$ ");
-		}
-		line = read_line();
-		if (line == NULL)
-		{
-			if (!interactive)
-				break;
-		}
-		commands = parse_commands(line);
-		if (commands[0])
-		{
-			if (strcmp(commands[0], "exit") == 0)
-				exit_flag = 1;
-			else
+			if (interactive)
 			{
-				command_path = get_command_path(commands[0]);
-				if (command_path == NULL)
+				printf("#cisfun$ ");
+			}
+			line = read_line();
+			if (line == NULL)
+			{
+				if (!interactive)
 				{
-					fprintf(stderr, "%s: 1: %s: not found\n", argv[0], commands[0]);
-					r_code = 127;
+					break;
+				}
+			}
+			commands = parse_commands(line);
+			if (commands[0])
+			{
+				if (strcmp(commands[0], "exit") == 0)
+				{
+					exit_flag = 1;
+				}
+				else if (strcmp(commands[0], "env") == 0)
+				{
+					for (; envp[i]; i++)
+						printf("%s\n", envp[i]);
 				}
 				else
 				{
-					execute(command_path, commands, envp);
-					if (command_path != commands[0])
+					command_path = get_command_path(commands[0]);
+					if (command_path == NULL)
+					{
+						fprintf(stderr, "%s: 1: %s: not found\n", argv[0], commands[0]);
+						r_code = 127;
+					}
+					else
+					{
+						execute(command_path, commands, envp);
 						free(command_path);
+					}
 				}
 			}
+			free(commands);
+			free(line);
+			line = NULL;
 		}
-		free(commands), free(line), line = NULL;
+		return (r_code);
 	}
-	return (r_code);
-}
