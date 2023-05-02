@@ -41,7 +41,7 @@ int process_commands(int interactive, char **argv, char **envp)
 					r_code = 127;
 				}
 				else
-					execute(command_path, commands, envp), free(command_path);
+					r_code = execute(command_path, commands, envp), free(command_path);
 			}
 		}
 		free(commands), free(line);
