@@ -19,5 +19,7 @@ char **parse_commands(char *line);
 char *get_command_path(char *command);
 int execute(char *command_path, char **args, char **envp);
 int process_commands(int interactive, char **argv, char **envp);
+int exit_builtin(char *command);
+int env_builtin(char *command, char **envp);
 
 #endif
