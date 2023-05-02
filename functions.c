@@ -60,25 +60,26 @@ char *get_command_path(char *command)
 			command_path = strdup(command);
 		else
 		{
-			copy_path = strdup(bin_path);
-			token = strtok(copy_path, ":");
-			while (token)
+			if (bin_path)
 			{
-				ptr = malloc(strlen(token) + strlen(command) + 2);
-				strcpy(ptr, token);
-				strcat(ptr, "/");
-				strcat(ptr, command);
-				if (access(ptr, X_OK) == 0)
+				copy_path = strdup(bin_path);
+				token = strtok(copy_path, ":");
+				while (token)
 				{
-					command_path = ptr;
-					break;
+					ptr = malloc(strlen(token) + strlen(command) + 2);
+					strcpy(ptr, token), strcat(ptr, "/"), strcat(ptr, command);
+					if (access(ptr, X_OK) == 0)
+					{
+						command_path = ptr;
+						break;
+					}
+					else
+						free(ptr);
+					command_path = NULL;
+					token = strtok(NULL, ":");
 				}
-				else
-					free(ptr);
-				command_path = NULL;
-				token = strtok(NULL, ":");
+				free(copy_path);
 			}
-			free(copy_path);
 		}
 	}
 	return (command_path);
