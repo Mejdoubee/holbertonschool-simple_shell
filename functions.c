@@ -60,22 +60,22 @@ char *get_command_path(char *command)
 			command_path = strdup(command);
 		else
 		{
-			command_path = NULL;
-			if (bin_path == NULL || strlen(bin_path) == 0)
-				bin_path = ".";
 			copy_path = strdup(bin_path);
 			token = strtok(copy_path, ":");
 			while (token)
 			{
 				ptr = malloc(strlen(token) + strlen(command) + 2);
-				strcpy(ptr, token), strcat(ptr, "/"), strcat(ptr, command);
+				strcpy(ptr, token);
+				strcat(ptr, "/");
+				strcat(ptr, command);
 				if (access(ptr, X_OK) == 0)
 				{
 					command_path = ptr;
 					break;
 				}
 				else
-					free(ptr), command_path = NULL;
+					free(ptr);
+				command_path = NULL;
 				token = strtok(NULL, ":");
 			}
 			free(copy_path);
@@ -94,6 +94,7 @@ char *get_command_path(char *command)
 int execute(char *command_path, char **args, char **envp)
 {
 	pid_t pid;
+	int status;
 
 	pid = fork();
 	if (pid == 0)
@@ -104,14 +105,14 @@ int execute(char *command_path, char **args, char **envp)
 	}
 	else if (pid > 0)
 	{
-		wait(NULL);
+		wait(&status);
 	}
 	else
 	{
 		perror("fork");
 		exit(1);
 	}
-	return (1);
+	return (WEXITSTATUS(status));
 }
 
 /**
