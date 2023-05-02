@@ -50,14 +50,14 @@ char *get_command_path(char *command)
 	if (command[0] == '/')
 	{
 		if (access(command, X_OK) == 0)
-			command_path = command;
+			command_path = strdup(command);
 		else
 			perror("access"), command_path = NULL;
 	}
 	else
 	{
 		if (access(command, X_OK) == 0)
-			command_path = command;
+			command_path = strdup(command);
 		else
 		{
 			command_path = NULL;
