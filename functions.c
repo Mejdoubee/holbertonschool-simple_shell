@@ -47,6 +47,10 @@ char *get_command_path(char *command)
 	char *bin_path = getenv("PATH");
 	char *copy_path = NULL, *token = NULL;
 
+	if (!bin_path)
+	{
+		bin_path = getenv("PATH1");
+	}
 	if (command[0] == '/')
 	{
 		if (access(command, X_OK) == 0)
@@ -78,8 +82,6 @@ char *get_command_path(char *command)
 				}
 				free(copy_path);
 			}
-			else
-				command_path = NULL;
 		}
 	}
 	return (command_path);
