@@ -1,0 +1,28 @@
+.TH SIMPLE_SHELL 1 "3 May 2023"
+.SH NAME
+simple_shell \- a simple shell implementation in C
+.SH SYNOPSIS
+.B simple_shell
+.RI [ command ]
+.SH DESCRIPTION
+.PP
+\fBsimple_shell\fR is a command-line interface for executing system commands. It supports running commands in both interactive and non-interactive modes, and it can search for the commands in the system's \fBPATH\fR. The shell handles command execution, argument parsing, and built-in commands such as \fBexit\fR and \fBenv\fR.
+.SH OPTIONS
+None.
+.SH EXAMPLES
+.PP
+To run the simple shell in interactive mode:
+.IP "*"
+\0./hsh
+.PP
+To run the simple shell in non-interactive mode:
+.IP "*"
+echo "command" | ./hsh
+.IP "*"
+cat commands.txt | ./hsh
+.SH AUTHOR
+Written by Ismail Mejdoub.
+.SH REPORTING BUGS
+Report bugs to 6235@holbertonstudents.com.
+.SH COPYRIGHT
+Copyright © 2023 Holberton School.
