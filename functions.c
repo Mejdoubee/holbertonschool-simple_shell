@@ -47,10 +47,6 @@ char *get_command_path(char *command)
 	char *bin_path = getenv("PATH");
 	char *copy_path = NULL, *token = NULL;
 
-	if (!bin_path)
-	{
-		bin_path = getenv("PATH1");
-	}
 	if (command[0] == '/')
 	{
 		if (access(command, X_OK) == 0)
@@ -60,9 +56,9 @@ char *get_command_path(char *command)
 	}
 	else
 	{
-		if (access(command, X_OK) == 0)
+		if ((command[0] == '.') && (access(command, X_OK) == 0))
 			command_path = strdup(command);
-		else
+		else if (command[0] != '.')
 		{
 			if (bin_path)
 			{
